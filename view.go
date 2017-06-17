@@ -31,6 +31,10 @@ type ResizableView interface {
 	SetFlexibleWidth(float64)
 }
 
+type hasContainerWidth interface {
+	setContainerWidth(int)
+}
+
 type view struct {
 	height, width                     float64
 	heightIsFlexible, widthIsFlexible bool
@@ -84,6 +88,10 @@ func (v *view) BackgroundColor() Color {
 }
 
 func (v *view) AddChild(childView View) {
+	if c, ok := childView.(hasContainerWidth); ok {
+		c.setContainerWidth(v.Width())
+	}
+
 	v.child = childView
 }
 

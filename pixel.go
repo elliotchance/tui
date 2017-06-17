@@ -23,6 +23,44 @@ func NewPixels(height, width int, backgroundColor Color) [][]Pixel {
 	return rows
 }
 
+func OverlayPixel(bottom, top Pixel) (p Pixel) {
+	bColor, bText := bottom.BackgroundColor, bottom.Character
+	tColor, tText := top.BackgroundColor, top.Character
+
+	switch {
+	case bColor == NoColor && tColor == NoColor && bText == ' ' && tText == ' ',
+		bColor == NoColor && tColor != NoColor && bText == ' ' && tText == ' ',
+		bColor == NoColor && tColor != NoColor && bText == ' ' && tText != ' ',
+		bColor == NoColor && tColor != NoColor && bText != ' ' && tText == ' ',
+		bColor == NoColor && tColor != NoColor && bText != ' ' && tText != ' ':
+		return Pixel{
+			BackgroundColor: tColor,
+			Character:       tText,
+		}
+	case bColor == NoColor && tColor == NoColor && bText == ' ' && tText != ' ',
+		bColor == NoColor && tColor == NoColor && bText != ' ' && tText != ' ',
+		bColor != NoColor && tColor == NoColor && bText == ' ' && tText != ' ',
+		bColor != NoColor && tColor == NoColor && bText != ' ' && tText != ' ',
+		bColor != NoColor && tColor != NoColor && bText == ' ' && tText == ' ',
+		bColor != NoColor && tColor != NoColor && bText == ' ' && tText != ' ',
+		bColor != NoColor && tColor != NoColor && bText != ' ' && tText != ' ',
+		bColor != NoColor && tColor != NoColor && bText != ' ' && tText == ' ':
+		return Pixel{
+			BackgroundColor: bColor,
+			Character:       tText,
+		}
+	case bColor == NoColor && tColor == NoColor && bText != ' ' && tText == ' ',
+		bColor != NoColor && tColor == NoColor && bText == ' ' && tText == ' ',
+		bColor != NoColor && tColor == NoColor && bText != ' ' && tText == ' ':
+		return Pixel{
+			BackgroundColor: bColor,
+			Character:       bText,
+		}
+	}
+
+	return
+}
+
 func OverlayPixels(bottom, top [][]Pixel) [][]Pixel {
 	// FIXME: We will assume that top must be smaller in both dimensions than
 	// bottom.
@@ -35,9 +73,8 @@ func OverlayPixels(bottom, top [][]Pixel) [][]Pixel {
 		row := make([]Pixel, width)
 		for colIndex := 0; colIndex < width; colIndex++ {
 			row[colIndex] = bottom[rowIndex][colIndex]
-			if rowIndex < len(top) && colIndex < len(top[rowIndex]) &&
-				top[rowIndex][colIndex].BackgroundColor != NoColor {
-				row[colIndex] = top[rowIndex][colIndex]
+			if rowIndex < len(top) && colIndex < len(top[rowIndex]) {
+				row[colIndex] = OverlayPixel(bottom[rowIndex][colIndex], top[rowIndex][colIndex])
 			}
 		}
 

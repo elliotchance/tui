@@ -8,9 +8,10 @@ import (
 )
 
 type windowTest struct {
-	expected string
-	setup    func(Window)
-	pixelMap map[byte]Color
+	expectedColors string
+	expectedText   string
+	setup          func(Window)
+	pixelMap       map[byte]Color
 }
 
 var windowTests = map[string]windowTest{
@@ -18,45 +19,54 @@ var windowTests = map[string]windowTest{
 		`.....
 		 .....
 		 .....`,
+		`~~~~~
+		 ~~~~~
+		 ~~~~~`,
 		func(w Window) {
 		},
-		map[byte]Color{
-			'.': NoColor,
-		},
+		map[byte]Color{},
 	},
 	"red window": {
-		`.....
-		 .....
-		 .....`,
+		`#####
+		 #####
+		 #####`,
+		`~~~~~
+		 ~~~~~
+		 ~~~~~`,
 		func(w Window) {
 			w.SetBackgroundColor(Red)
 		},
 		map[byte]Color{
-			'.': Red,
+			'#': Red,
 		},
 	},
 	"green window view": {
-		`.....
-		 .....
-		 .....`,
+		`#####
+		 #####
+		 #####`,
+		`~~~~~
+		 ~~~~~
+		 ~~~~~`,
 		func(w Window) {
 			w.View().SetBackgroundColor(Green)
 		},
 		map[byte]Color{
-			'.': Green,
+			'#': Green,
 		},
 	},
 	"resize window view": {
 		`###..
 		 ###..
 		 .....`,
+		`~~~~~
+		 ~~~~~
+		 ~~~~~`,
 		func(w Window) {
 			w.View().SetBackgroundColor(Green)
 			w.View().(ResizableView).SetHeight(2)
 			w.View().(ResizableView).SetWidth(3)
 		},
 		map[byte]Color{
-			'.': NoColor,
 			'#': Green,
 		},
 	},
@@ -64,16 +74,94 @@ var windowTests = map[string]windowTest{
 		`####.
 		 ####.
 		 .....`,
+		`~~~~~
+		 ~~~~~
+		 ~~~~~`,
 		func(w Window) {
 			w.View().SetBackgroundColor(Green)
 			w.View().(ResizableView).SetFlexibleHeight(0.7)
 			w.View().(ResizableView).SetFlexibleWidth(0.8)
 		},
 		map[byte]Color{
-			'.': NoColor,
 			'#': Green,
 		},
 	},
+	"textbox less text": {
+		`.....
+		 .....
+		 .....`,
+		`Hi~~~
+		 ~~~~~
+		 ~~~~~`,
+		func(w Window) {
+			textBox := NewTextBox("Hi")
+			textBox.SetWidth(4)
+			w.View().AddChild(textBox)
+		},
+		map[byte]Color{},
+	},
+	"textbox exact text": {
+		`.....
+		 .....
+		 .....`,
+		`Foo~~
+		 ~~~~~
+		 ~~~~~`,
+		func(w Window) {
+			textBox := NewTextBox("Foo")
+			textBox.SetWidth(3)
+			w.View().AddChild(textBox)
+		},
+		map[byte]Color{},
+	},
+	"textbox overflow text": {
+		`.....
+		 .....
+		 .....`,
+		`Hell~
+		 ~~~~~
+		 ~~~~~`,
+		func(w Window) {
+			textBox := NewTextBox("Hello World")
+			textBox.SetWidth(4)
+			w.View().AddChild(textBox)
+		},
+		map[byte]Color{},
+	},
+	"textbox default width": {
+		`.....
+		 .....
+		 .....`,
+		`Hi~~~
+		 ~~~~~
+		 ~~~~~`,
+		func(w Window) {
+			textBox := NewTextBox("Hi")
+			w.View().AddChild(textBox)
+		},
+		map[byte]Color{},
+	},
+	"textbox default width overflow": {
+		`.....
+		 .....
+		 .....`,
+		`Hello
+		 ~~~~~
+		 ~~~~~`,
+		func(w Window) {
+			textBox := NewTextBox("Hello World")
+			w.View().AddChild(textBox)
+		},
+		map[byte]Color{},
+	},
+}
+
+func stripSpace(s string) string {
+	s = strings.Replace(s, " ", "", -1)
+	s = strings.Replace(s, "\n", "", -1)
+	s = strings.Replace(s, "\t", "", -1)
+
+	return s
 }
 
 func TestWindow(t *testing.T) {
@@ -83,26 +171,37 @@ func TestWindow(t *testing.T) {
 
 		test.setup(window)
 
-		expected := test.expected
-		expected = strings.Replace(expected, " ", "", -1)
-		expected = strings.Replace(expected, "\n", "", -1)
-		expected = strings.Replace(expected, "\t", "", -1)
+		expectedColors := stripSpace(test.expectedColors)
+		expectedText := stripSpace(test.expectedText)
 
 		expectedPixels := NewPixels(height, width, NoColor)
-		actualPixels := window.Render()
-
 		for row := 0; row < len(expectedPixels); row++ {
 			for col := 0; col < len(expectedPixels[0]); col++ {
 				pos := len(expectedPixels[0])*row + col
-				expectedPixels[row][col].BackgroundColor = test.pixelMap[expected[pos]]
+
+				char := expectedText[pos]
+				if char == '~' {
+					char = ' '
+				}
+
+				color := test.pixelMap[expectedColors[pos]]
+				if expectedColors[pos] == '.' {
+					color = NoColor
+				}
+
+				expectedPixels[row][col].Character = rune(char)
+				expectedPixels[row][col].BackgroundColor = color
 			}
 		}
+
+		actualPixels := window.Render()
 
 		if !reflect.DeepEqual(actualPixels, expectedPixels) {
 			fmt.Printf("%s expected:\n", testName)
 			Display(expectedPixels)
 			fmt.Printf("%s got:\n", testName)
 			Display(actualPixels)
+
 			t.Fail()
 		}
 	}
