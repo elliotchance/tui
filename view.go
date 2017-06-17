@@ -4,16 +4,23 @@ type Renderer interface {
 	Render() [][]Pixel
 }
 
-type View interface {
-	Renderer
-
-	// Size
-	Height() int
-	Width() int
-
-	// Colors
+type HasBackgroundColor interface {
 	SetBackgroundColor(Color)
 	BackgroundColor() Color
+}
+
+type HasSize interface {
+	Height() int
+	Width() int
+}
+
+type View interface {
+	Renderer
+	HasBackgroundColor
+	HasSize
+
+	SetHeight(int)
+	SetWidth(int)
 }
 
 type view struct {
@@ -25,8 +32,16 @@ func (v *view) Height() int {
 	return v.height
 }
 
+func (v *view) SetHeight(height int) {
+	v.height = height
+}
+
 func (v *view) Width() int {
 	return v.width
+}
+
+func (v *view) SetWidth(width int) {
+	v.width = width
 }
 
 func (v *view) SetBackgroundColor(c Color) {
