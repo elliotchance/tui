@@ -1,6 +1,11 @@
 package tui
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+	"os"
+	"os/exec"
+)
 
 type Pixel byte
 
@@ -11,29 +16,41 @@ type Renderer interface {
 type Window interface {
 	Renderer
 
-	Width() int
 	Height() int
+	Width() int
 }
 
 type window struct {
-	width, height int
+	height, width int
 }
 
-func (w *window) Width() int {
-	return w.width
+func getTerminalSize() (height, width int) {
+	cmd := exec.Command("stty", "size")
+	cmd.Stdin = os.Stdin
+	out, err := cmd.Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Sscanf(string(out), "%d %d", &height, &width)
+	return
 }
 
 func (w *window) Height() int {
 	return w.height
 }
 
-func NewPixels(width, height int) [][]Pixel {
+func (w *window) Width() int {
+	return w.width
+}
+
+func NewPixels(height, width int) [][]Pixel {
 	rows := [][]Pixel{}
 
 	for row := 0; row < height; row++ {
 		row := make([]Pixel, width)
 		for col := 0; col < width; col++ {
-			row[col] = '.'
+			row[col] = ' '
 		}
 
 		rows = append(rows, row)
@@ -43,7 +60,7 @@ func NewPixels(width, height int) [][]Pixel {
 }
 
 func (w *window) Render() [][]Pixel {
-	rows := NewPixels(w.width, w.height)
+	rows := NewPixels(w.height, w.width)
 
 	return rows
 }
@@ -58,5 +75,6 @@ func Display(pixels [][]Pixel) {
 }
 
 func MainWindow() Window {
-	return &window{5, 3}
+	height, width := getTerminalSize()
+	return &window{height, width}
 }
