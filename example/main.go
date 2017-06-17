@@ -1,11 +1,11 @@
 package main
 
-import (
-	"github.com/elliotchance/tui"
-)
+import "github.com/elliotchance/tui"
 
 func main() {
 	window := tui.MainWindow()
-	pixels := window.Render()
+	window.View().SetBackgroundColor(tui.NewColorRGB(0.2, 0.2, 0.2))
+
+	pixels := window.View().Render()
 	tui.Display(pixels)
 }
