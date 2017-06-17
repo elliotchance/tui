@@ -69,9 +69,7 @@ func (w *window) Width() int {
 	return w.width
 }
 
-func MainWindow() Window {
-	height, width := getTerminalSize()
-
+func newWindow(height, width int) Window {
 	return &window{
 		height:          height,
 		width:           width,
@@ -87,4 +85,10 @@ func MainWindow() Window {
 			backgroundColor:  NoColor,
 		},
 	}
+}
+
+func MainWindow() Window {
+	height, width := getTerminalSize()
+
+	return newWindow(height, width)
 }

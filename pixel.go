@@ -35,7 +35,8 @@ func OverlayPixels(bottom, top [][]Pixel) [][]Pixel {
 		row := make([]Pixel, width)
 		for colIndex := 0; colIndex < width; colIndex++ {
 			row[colIndex] = bottom[rowIndex][colIndex]
-			if rowIndex < len(top) && colIndex < len(top[rowIndex]) {
+			if rowIndex < len(top) && colIndex < len(top[rowIndex]) &&
+				top[rowIndex][colIndex].BackgroundColor != NoColor {
 				row[colIndex] = top[rowIndex][colIndex]
 			}
 		}
