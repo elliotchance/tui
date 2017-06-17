@@ -71,6 +71,7 @@ func (w *window) Width() int {
 
 func MainWindow() Window {
 	height, width := getTerminalSize()
+
 	return &window{
 		height:          height,
 		width:           width,

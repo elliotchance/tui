@@ -19,6 +19,12 @@ type View interface {
 	HasBackgroundColor
 	HasSize
 
+	AddChild(view View)
+}
+
+type ResizableView interface {
+	View
+
 	SetHeight(int)
 	SetWidth(int)
 	SetFlexibleHeight(float64)
@@ -30,6 +36,7 @@ type view struct {
 	heightIsFlexible, widthIsFlexible bool
 	backgroundColor                   Color
 	containerHeight, containerWidth   int
+	child                             View
 }
 
 func (v *view) Height() int {
@@ -76,8 +83,17 @@ func (v *view) BackgroundColor() Color {
 	return v.backgroundColor
 }
 
-func (v *view) Render() [][]Pixel {
-	rows := NewPixels(v.Height(), v.Width(), v.backgroundColor)
+func (v *view) AddChild(childView View) {
+	v.child = childView
+}
 
-	return rows
+func (v *view) Render() [][]Pixel {
+	renderedView := NewPixels(v.Height(), v.Width(), v.backgroundColor)
+
+	if v.child != nil {
+		renderedChild := v.child.Render()
+		renderedView = OverlayPixels(renderedView, renderedChild)
+	}
+
+	return renderedView
 }

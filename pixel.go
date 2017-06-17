@@ -1,7 +1,7 @@
 package tui
 
 type Pixel struct {
-	Character       byte
+	Character       rune
 	BackgroundColor Color
 }
 
