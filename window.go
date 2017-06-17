@@ -77,9 +77,13 @@ func MainWindow() Window {
 		backgroundColor: NoColor,
 
 		view: &view{
-			height:          height,
-			width:           width,
-			backgroundColor: NoColor,
+			height:           100.0,
+			width:            100.0,
+			heightIsFlexible: true,
+			widthIsFlexible:  true,
+			containerHeight:  height,
+			containerWidth:   width,
+			backgroundColor:  NoColor,
 		},
 	}
 }
