@@ -37,7 +37,7 @@ func MainWindow() Window {
 		view: &view{
 			height:          height,
 			width:           width,
-			backgroundColor: NewColorRGB(1, 1, 1),
+			backgroundColor: NoColor,
 		},
 	}
 }

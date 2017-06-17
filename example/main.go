@@ -4,8 +4,10 @@ import "github.com/elliotchance/tui"
 
 func main() {
 	window := tui.MainWindow()
-	window.View().SetBackgroundColor(tui.NewColorRGB(0.2, 0.2, 0.2))
+	view := window.View()
+	// view.SetBackgroundColor(tui.NewColorRGB(0.2, 0.2, 0.2))
+	// view.SetBackgroundColor(tui.NoColor)
 
-	pixels := window.View().Render()
+	pixels := view.Render()
 	tui.Display(pixels)
 }
