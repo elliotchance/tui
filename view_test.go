@@ -28,8 +28,8 @@ var viewTests = map[string]windowTest{
 		 ~~~~~`,
 		func(w Window) {
 			w.View().SetBackgroundColor(Green)
-			w.View().(ResizableView).SetHeight(2)
-			w.View().(ResizableView).SetWidth(3)
+			w.View().Size().SetHeight(2)
+			w.View().Size().SetWidth(3)
 		},
 		map[byte]Color{
 			'#': Green,
@@ -44,8 +44,8 @@ var viewTests = map[string]windowTest{
 		 ~~~~~`,
 		func(w Window) {
 			w.View().SetBackgroundColor(Green)
-			w.View().(ResizableView).SetFlexibleHeight(0.7)
-			w.View().(ResizableView).SetFlexibleWidth(0.8)
+			w.View().Size().SetFlexibleHeight(0.7)
+			w.View().Size().SetFlexibleWidth(0.8)
 		},
 		map[byte]Color{
 			'#': Green,

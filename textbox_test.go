@@ -13,9 +13,8 @@ var textboxTests = map[string]windowTest{
 		 ~~~~~
 		 ~~~~~`,
 		func(w Window) {
-			textBox := NewTextBox("Hi")
-			textBox.SetWidth(4)
-			w.View().AddChild(textBox)
+			textBox := w.View().AddTextBox("Hi")
+			textBox.Size().SetWidth(4)
 		},
 		map[byte]Color{},
 	},
@@ -27,9 +26,8 @@ var textboxTests = map[string]windowTest{
 		 ~~~~~
 		 ~~~~~`,
 		func(w Window) {
-			textBox := NewTextBox("Foo")
-			textBox.SetWidth(3)
-			w.View().AddChild(textBox)
+			textBox := w.View().AddTextBox("Foo")
+			textBox.Size().SetWidth(3)
 		},
 		map[byte]Color{},
 	},
@@ -41,9 +39,8 @@ var textboxTests = map[string]windowTest{
 		 ~~~~~
 		 ~~~~~`,
 		func(w Window) {
-			textBox := NewTextBox("Hello World")
-			textBox.SetWidth(4)
-			w.View().AddChild(textBox)
+			textBox := w.View().AddTextBox("Hello World")
+			textBox.Size().SetWidth(4)
 		},
 		map[byte]Color{},
 	},
@@ -55,8 +52,7 @@ var textboxTests = map[string]windowTest{
 		 ~~~~~
 		 ~~~~~`,
 		func(w Window) {
-			textBox := NewTextBox("Hi")
-			w.View().AddChild(textBox)
+			w.View().AddTextBox("Hi")
 		},
 		map[byte]Color{},
 	},
@@ -68,8 +64,7 @@ var textboxTests = map[string]windowTest{
 		 ~~~~~
 		 ~~~~~`,
 		func(w Window) {
-			textBox := NewTextBox("Hello World")
-			w.View().AddChild(textBox)
+			w.View().AddTextBox("Hello World")
 		},
 		map[byte]Color{},
 	},

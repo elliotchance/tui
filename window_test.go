@@ -1,7 +1,6 @@
 package tui
 
 import (
-	"fmt"
 	"reflect"
 	"strings"
 	"testing"
@@ -84,12 +83,8 @@ func runWindowTests(t *testing.T, tests map[string]windowTest) {
 			actualPixels := window.Render()
 
 			if !reflect.DeepEqual(actualPixels, expectedPixels) {
-				fmt.Printf("%s expected:\n", testName)
-				Display(expectedPixels)
-				fmt.Printf("%s got:\n", testName)
-				Display(actualPixels)
-
-				t.Fail()
+				t.Errorf("expected:\n%s", Display(expectedPixels))
+				t.Errorf("got:\n%s", Display(actualPixels))
 			}
 		})
 	}

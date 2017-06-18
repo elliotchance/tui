@@ -10,15 +10,15 @@ import (
 type Window interface {
 	Renderer
 	HasBackgroundColor
-	HasSize
 
 	View() View
+	Size() Size
 }
 
 type window struct {
 	view            View
 	backgroundColor Color
-	height, width   int
+	size            Size
 }
 
 func getTerminalSize() (height, width int) {
@@ -37,18 +37,15 @@ func (w *window) View() View {
 	return w.view
 }
 
+func (w *window) Size() Size {
+	return w.size
+}
+
 func (w *window) Render() [][]Pixel {
-	view := w.View()
-	renderedView := view.Render()
+	renderedView := w.View().Render()
 
-	// If the view has the same size as the window we do not need to do anything
-	// else.
-	if view.Height() == w.Height() && view.Width() == w.Width() {
-		return renderedView
-	}
-
-	// Otherwise we have to render the window and overlay the view.
-	renderedWindow := NewPixels(w.height, w.width, w.backgroundColor)
+	size := w.Size()
+	renderedWindow := NewPixels(size.Height(), size.Width(), w.backgroundColor)
 
 	return OverlayPixels(renderedWindow, renderedView)
 }
@@ -61,28 +58,14 @@ func (w *window) BackgroundColor() Color {
 	return w.backgroundColor
 }
 
-func (w *window) Height() int {
-	return w.height
-}
-
-func (w *window) Width() int {
-	return w.width
-}
-
 func newWindow(height, width int) Window {
 	return &window{
-		height:          height,
-		width:           width,
+		size:            newMutableSize(height, width),
 		backgroundColor: NoColor,
 
 		view: &view{
-			height:           100.0,
-			width:            100.0,
-			heightIsFlexible: true,
-			widthIsFlexible:  true,
-			containerHeight:  height,
-			containerWidth:   width,
-			backgroundColor:  NoColor,
+			size:            newMutableSize(height, width),
+			backgroundColor: NoColor,
 		},
 	}
 }

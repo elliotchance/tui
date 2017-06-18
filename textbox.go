@@ -1,26 +1,28 @@
 package tui
 
 type TextBox interface {
-	View
-
 	SetText(string)
 	Text() string
-	SetWidth(int)
+	Size() MutableSize
+	Render() [][]Pixel
 }
 
 type textBox struct {
 	text            string
-	width           int
 	backgroundColor Color
-	containerWidth  int
+	size            MutableSize
 }
 
-func NewTextBox(text string) TextBox {
-	return &textBox{
+func (v *view) AddTextBox(text string) TextBox {
+	textBox := &textBox{
 		text:            text,
 		backgroundColor: NoColor,
-		width:           -1,
+		size:            newMutableSize(1 /*v.Size().Height()*/, v.Size().Width()),
 	}
+
+	v.child = textBox
+
+	return textBox
 }
 
 func (v *textBox) SetText(text string) {
@@ -31,10 +33,6 @@ func (v *textBox) Text() string {
 	return v.text
 }
 
-func (v *textBox) AddChild(childView View) {
-	panic("not allowed")
-}
-
 func (v *textBox) SetBackgroundColor(c Color) {
 	v.backgroundColor = c
 }
@@ -43,31 +41,15 @@ func (v *textBox) BackgroundColor() Color {
 	return v.backgroundColor
 }
 
-func (v *textBox) Height() int {
-	return 1
-}
-
-func (v *textBox) Width() int {
-	if v.width == -1 {
-		return v.containerWidth
-	}
-
-	return v.width
-}
-
-func (v *textBox) SetWidth(width int) {
-	v.width = width
-}
-
-func (v *textBox) setContainerWidth(width int) {
-	v.containerWidth = width
+func (v *textBox) Size() MutableSize {
+	return v.size
 }
 
 func (v *textBox) Render() [][]Pixel {
-	rows := NewPixels(v.Height(), v.Width(), v.backgroundColor)
+	rows := NewPixels(v.Size().Height(), v.Size().Width(), v.backgroundColor)
 
 	for i, c := range v.text {
-		if i >= v.Width() {
+		if i >= v.Size().Width() {
 			// The text exceeds the view, it will be hidden.
 			break
 		}
