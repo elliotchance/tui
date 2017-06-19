@@ -64,9 +64,9 @@ func OverlayPixel(bottom, top Pixel) (p Pixel) {
 func OverlayPixels(bottom, top [][]Pixel) [][]Pixel {
 	// FIXME: We will assume that top must be smaller in both dimensions than
 	// bottom.
+
 	height := len(bottom)
 	width := len(bottom[0])
-
 	rows := [][]Pixel{}
 
 	for rowIndex := 0; rowIndex < height; rowIndex++ {
@@ -76,6 +76,34 @@ func OverlayPixels(bottom, top [][]Pixel) [][]Pixel {
 			if rowIndex < len(top) && colIndex < len(top[rowIndex]) {
 				row[colIndex] = OverlayPixel(bottom[rowIndex][colIndex], top[rowIndex][colIndex])
 			}
+		}
+
+		rows = append(rows, row)
+	}
+
+	return rows
+}
+
+func movePixelsRight(pixels [][]Pixel, rightAmount int) [][]Pixel {
+	// FIXME: We assume that the shift right will be positive.
+
+	height := len(pixels)
+	width := len(pixels[0])
+	rows := [][]Pixel{}
+
+	for rowIndex := 0; rowIndex < height; rowIndex++ {
+		// FIXME: This is a hack to make sure we always have room for the
+		// rightAmount. It should pick the smallest value.
+		row := make([]Pixel, width+rightAmount)
+		for colIndex := 0; colIndex < rightAmount; colIndex++ {
+			row[colIndex] = Pixel{
+				Character:       ' ',
+				BackgroundColor: NoColor,
+			}
+		}
+
+		for colIndex := 0; colIndex < width; colIndex++ {
+			row[colIndex+rightAmount] = pixels[rowIndex][colIndex]
 		}
 
 		rows = append(rows, row)

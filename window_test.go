@@ -49,6 +49,37 @@ func stripSpace(s string) string {
 	return s
 }
 
+func addBorder(p [][]Pixel) (q [][]Pixel) {
+	height := len(p)
+	width := len(p[0])
+	q = NewPixels(height+2, width+2, NoColor)
+
+	// Create box
+	q[0][0].Character = '+'
+	q[height+1][0].Character = '+'
+	q[0][width+1].Character = '+'
+	q[height+1][width+1].Character = '+'
+
+	for i := 0; i < width; i++ {
+		q[0][i+1].Character = '-'
+		q[height+1][i+1].Character = '-'
+	}
+
+	for i := 0; i < height; i++ {
+		q[i+1][0].Character = '|'
+		q[i+1][width+1].Character = '|'
+	}
+
+	// Fill in contents
+	for i := 0; i < height; i++ {
+		for j := 0; j < width; j++ {
+			q[i+1][j+1] = p[i][j]
+		}
+	}
+
+	return
+}
+
 func runWindowTests(t *testing.T, tests map[string]windowTest) {
 	for testName, test := range tests {
 		t.Run(testName, func(t *testing.T) {
@@ -83,6 +114,11 @@ func runWindowTests(t *testing.T, tests map[string]windowTest) {
 			actualPixels := window.Render()
 
 			if !reflect.DeepEqual(actualPixels, expectedPixels) {
+				// Go will remove spaces from strings which may affect how it
+				// looks in the diff. WE will render a square around it.
+				expectedPixels = addBorder(expectedPixels)
+				actualPixels = addBorder(actualPixels)
+
 				t.Errorf("expected:\n%s", Display(expectedPixels))
 				t.Errorf("got:\n%s", Display(actualPixels))
 			}

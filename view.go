@@ -7,7 +7,14 @@ type Renderer interface {
 type View struct {
 	backgroundColor Color
 	child           Renderer
-	size            *Size
+	size            MutableSizer
+}
+
+func newView(height, width int) *View {
+	return &View{
+		size:            newMutableSize(height, width),
+		backgroundColor: NoColor,
+	}
 }
 
 func (v *View) SetBackgroundColor(c Color) {

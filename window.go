@@ -54,11 +54,7 @@ func newWindow(height, width int) *Window {
 	return &Window{
 		size:            newMutableSize(height, width),
 		backgroundColor: NoColor,
-
-		view: &View{
-			size:            newMutableSize(height, width),
-			backgroundColor: NoColor,
-		},
+		view:            newView(height, width),
 	}
 }
 
