@@ -5,7 +5,7 @@ import (
 )
 
 var textboxTests = map[string]windowTest{
-	"textbox less text": {
+	"less text than length": {
 		`.....
 		 .....
 		 .....`,
@@ -14,11 +14,12 @@ var textboxTests = map[string]windowTest{
 		 ~~~~~`,
 		func(w Window) {
 			textBox := w.View().AddTextBox("Hi")
+			textBox.Size().SetHeight(1)
 			textBox.Size().SetWidth(4)
 		},
 		map[byte]Color{},
 	},
-	"textbox exact text": {
+	"exact text length": {
 		`.....
 		 .....
 		 .....`,
@@ -27,11 +28,12 @@ var textboxTests = map[string]windowTest{
 		 ~~~~~`,
 		func(w Window) {
 			textBox := w.View().AddTextBox("Foo")
+			textBox.Size().SetHeight(1)
 			textBox.Size().SetWidth(3)
 		},
 		map[byte]Color{},
 	},
-	"textbox overflow text": {
+	"hide overflow text": {
 		`.....
 		 .....
 		 .....`,
@@ -40,11 +42,12 @@ var textboxTests = map[string]windowTest{
 		 ~~~~~`,
 		func(w Window) {
 			textBox := w.View().AddTextBox("Hello World")
+			textBox.Size().SetHeight(1)
 			textBox.Size().SetWidth(4)
 		},
 		map[byte]Color{},
 	},
-	"textbox default width": {
+	"default width is 100 percent": {
 		`.....
 		 .....
 		 .....`,
@@ -52,11 +55,12 @@ var textboxTests = map[string]windowTest{
 		 ~~~~~
 		 ~~~~~`,
 		func(w Window) {
-			w.View().AddTextBox("Hi")
+			textBox := w.View().AddTextBox("Hi")
+			textBox.Size().SetHeight(1)
 		},
 		map[byte]Color{},
 	},
-	"textbox default width overflow": {
+	"default width overflow": {
 		`.....
 		 .....
 		 .....`,
@@ -64,7 +68,20 @@ var textboxTests = map[string]windowTest{
 		 ~~~~~
 		 ~~~~~`,
 		func(w Window) {
-			w.View().AddTextBox("Hello World")
+			textBox := w.View().AddTextBox("Hello World")
+			textBox.Size().SetHeight(1)
+		},
+		map[byte]Color{},
+	},
+	"wrap lines": {
+		`.....
+		 .....
+		 .....`,
+		`Foo~A
+		 Bar~~
+		 Bazzi`,
+		func(w Window) {
+			w.View().AddTextBox("Foo A Bar Bazzing")
 		},
 		map[byte]Color{},
 	},
