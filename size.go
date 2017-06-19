@@ -1,28 +1,28 @@
 package tui
 
-type Size interface {
+type Sizer interface {
 	Height() int
 	Width() int
 	HeightIsFlexible() bool
 	WidthIsFlexible() bool
 }
 
-type MutableSize interface {
-	Size
+type MutableSizer interface {
+	Sizer
 	SetHeight(int)
 	SetWidth(int)
 	SetFlexibleHeight(float64)
 	SetFlexibleWidth(float64)
 }
 
-type size struct {
+type Size struct {
 	height, width                     float64
 	heightIsFlexible, widthIsFlexible bool
 	containerHeight, containerWidth   int
 }
 
-func newMutableSize(containerHeight, containerWidth int) MutableSize {
-	return &size{
+func newMutableSize(containerHeight, containerWidth int) *Size {
+	return &Size{
 		height:           1.0,
 		width:            1.0,
 		heightIsFlexible: true,
@@ -32,7 +32,7 @@ func newMutableSize(containerHeight, containerWidth int) MutableSize {
 	}
 }
 
-func (s *size) Height() int {
+func (s *Size) Height() int {
 	if s.heightIsFlexible {
 		return int(s.height * float64(s.containerHeight))
 	}
@@ -40,7 +40,7 @@ func (s *size) Height() int {
 	return int(s.height)
 }
 
-func (s *size) Width() int {
+func (s *Size) Width() int {
 	if s.widthIsFlexible {
 		return int(s.width * float64(s.containerWidth))
 	}
@@ -48,30 +48,30 @@ func (s *size) Width() int {
 	return int(s.width)
 }
 
-func (s *size) SetHeight(height int) {
+func (s *Size) SetHeight(height int) {
 	s.heightIsFlexible = false
 	s.height = float64(height)
 }
 
-func (s *size) SetWidth(width int) {
+func (s *Size) SetWidth(width int) {
 	s.widthIsFlexible = false
 	s.width = float64(width)
 }
 
-func (s *size) SetFlexibleHeight(flexibleHeight float64) {
+func (s *Size) SetFlexibleHeight(flexibleHeight float64) {
 	s.heightIsFlexible = true
 	s.height = flexibleHeight
 }
 
-func (s *size) SetFlexibleWidth(flexibleWidth float64) {
+func (s *Size) SetFlexibleWidth(flexibleWidth float64) {
 	s.widthIsFlexible = true
 	s.width = flexibleWidth
 }
 
-func (s *size) HeightIsFlexible() bool {
+func (s *Size) HeightIsFlexible() bool {
 	return s.heightIsFlexible
 }
 
-func (s *size) WidthIsFlexible() bool {
+func (s *Size) WidthIsFlexible() bool {
 	return s.widthIsFlexible
 }

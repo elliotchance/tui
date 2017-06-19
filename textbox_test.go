@@ -12,7 +12,7 @@ var textboxTests = map[string]windowTest{
 		`Hi~~~
 		 ~~~~~
 		 ~~~~~`,
-		func(w Window) {
+		func(w *Window) {
 			textBox := w.View().AddTextBox("Hi")
 			textBox.Size().SetHeight(1)
 			textBox.Size().SetWidth(4)
@@ -26,7 +26,7 @@ var textboxTests = map[string]windowTest{
 		`Foo~~
 		 ~~~~~
 		 ~~~~~`,
-		func(w Window) {
+		func(w *Window) {
 			textBox := w.View().AddTextBox("Foo")
 			textBox.Size().SetHeight(1)
 			textBox.Size().SetWidth(3)
@@ -40,7 +40,7 @@ var textboxTests = map[string]windowTest{
 		`Hell~
 		 ~~~~~
 		 ~~~~~`,
-		func(w Window) {
+		func(w *Window) {
 			textBox := w.View().AddTextBox("Hello World")
 			textBox.Size().SetHeight(1)
 			textBox.Size().SetWidth(4)
@@ -54,7 +54,7 @@ var textboxTests = map[string]windowTest{
 		`Hi~~~
 		 ~~~~~
 		 ~~~~~`,
-		func(w Window) {
+		func(w *Window) {
 			textBox := w.View().AddTextBox("Hi")
 			textBox.Size().SetHeight(1)
 		},
@@ -67,7 +67,7 @@ var textboxTests = map[string]windowTest{
 		`Hello
 		 ~~~~~
 		 ~~~~~`,
-		func(w Window) {
+		func(w *Window) {
 			textBox := w.View().AddTextBox("Hello World")
 			textBox.Size().SetHeight(1)
 		},
@@ -80,7 +80,7 @@ var textboxTests = map[string]windowTest{
 		`Foo~A
 		 Bar~~
 		 Bazzi`,
-		func(w Window) {
+		func(w *Window) {
 			w.View().AddTextBox("Foo A Bar Bazzing")
 		},
 		map[byte]Color{},

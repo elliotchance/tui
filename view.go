@@ -4,36 +4,21 @@ type Renderer interface {
 	Render() [][]Pixel
 }
 
-type HasBackgroundColor interface {
-	SetBackgroundColor(Color)
-	BackgroundColor() Color
-}
-
-type View interface {
-	Renderer
-	HasBackgroundColor
-
-	Size() MutableSize
-
-	// Subviews
-	AddTextBox(string) TextBox
-}
-
-type view struct {
+type View struct {
 	backgroundColor Color
-	child           TextBox
-	size            MutableSize
+	child           Renderer
+	size            *Size
 }
 
-func (v *view) SetBackgroundColor(c Color) {
+func (v *View) SetBackgroundColor(c Color) {
 	v.backgroundColor = c
 }
 
-func (v *view) BackgroundColor() Color {
+func (v *View) BackgroundColor() Color {
 	return v.backgroundColor
 }
 
-func (v *view) Render() [][]Pixel {
+func (v *View) Render() [][]Pixel {
 	size := v.Size()
 	renderedView := NewPixels(size.Height(), size.Width(), v.backgroundColor)
 
@@ -45,6 +30,6 @@ func (v *view) Render() [][]Pixel {
 	return renderedView
 }
 
-func (v *view) Size() MutableSize {
+func (v *View) Size() MutableSizer {
 	return v.size
 }

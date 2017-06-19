@@ -9,7 +9,7 @@ import (
 type windowTest struct {
 	expectedColors string
 	expectedText   string
-	setup          func(Window)
+	setup          func(*Window)
 	pixelMap       map[byte]Color
 }
 
@@ -21,7 +21,7 @@ var windowTests = map[string]windowTest{
 		`~~~~~
 		 ~~~~~
 		 ~~~~~`,
-		func(w Window) {
+		func(w *Window) {
 		},
 		map[byte]Color{},
 	},
@@ -32,7 +32,7 @@ var windowTests = map[string]windowTest{
 		`~~~~~
 		 ~~~~~
 		 ~~~~~`,
-		func(w Window) {
+		func(w *Window) {
 			w.SetBackgroundColor(Red)
 		},
 		map[byte]Color{

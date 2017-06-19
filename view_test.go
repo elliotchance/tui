@@ -12,7 +12,7 @@ var viewTests = map[string]windowTest{
 		`~~~~~
 		 ~~~~~
 		 ~~~~~`,
-		func(w Window) {
+		func(w *Window) {
 			w.View().SetBackgroundColor(Green)
 		},
 		map[byte]Color{
@@ -26,7 +26,7 @@ var viewTests = map[string]windowTest{
 		`~~~~~
 		 ~~~~~
 		 ~~~~~`,
-		func(w Window) {
+		func(w *Window) {
 			w.View().SetBackgroundColor(Green)
 			w.View().Size().SetHeight(2)
 			w.View().Size().SetWidth(3)
@@ -42,7 +42,7 @@ var viewTests = map[string]windowTest{
 		`~~~~~
 		 ~~~~~
 		 ~~~~~`,
-		func(w Window) {
+		func(w *Window) {
 			w.View().SetBackgroundColor(Green)
 			w.View().Size().SetFlexibleHeight(0.7)
 			w.View().Size().SetFlexibleWidth(0.8)

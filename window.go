@@ -7,18 +7,10 @@ import (
 	"os/exec"
 )
 
-type Window interface {
-	Renderer
-	HasBackgroundColor
-
-	View() View
-	Size() Size
-}
-
-type window struct {
-	view            View
+type Window struct {
+	view            *View
 	backgroundColor Color
-	size            Size
+	size            *Size
 }
 
 func getTerminalSize() (height, width int) {
@@ -33,15 +25,15 @@ func getTerminalSize() (height, width int) {
 	return
 }
 
-func (w *window) View() View {
+func (w *Window) View() *View {
 	return w.view
 }
 
-func (w *window) Size() Size {
+func (w *Window) Size() Sizer {
 	return w.size
 }
 
-func (w *window) Render() [][]Pixel {
+func (w *Window) Render() [][]Pixel {
 	renderedView := w.View().Render()
 
 	size := w.Size()
@@ -50,27 +42,27 @@ func (w *window) Render() [][]Pixel {
 	return OverlayPixels(renderedWindow, renderedView)
 }
 
-func (w *window) SetBackgroundColor(c Color) {
+func (w *Window) SetBackgroundColor(c Color) {
 	w.backgroundColor = c
 }
 
-func (w *window) BackgroundColor() Color {
+func (w *Window) BackgroundColor() Color {
 	return w.backgroundColor
 }
 
-func newWindow(height, width int) Window {
-	return &window{
+func newWindow(height, width int) *Window {
+	return &Window{
 		size:            newMutableSize(height, width),
 		backgroundColor: NoColor,
 
-		view: &view{
+		view: &View{
 			size:            newMutableSize(height, width),
 			backgroundColor: NoColor,
 		},
 	}
 }
 
-func MainWindow() Window {
+func MainWindow() *Window {
 	height, width := getTerminalSize()
 
 	return newWindow(height, width)

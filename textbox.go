@@ -4,21 +4,14 @@ import (
 	"strings"
 )
 
-type TextBox interface {
-	SetText(string)
-	Text() string
-	Size() MutableSize
-	Render() [][]Pixel
-}
-
-type textBox struct {
+type TextBox struct {
 	text            string
 	backgroundColor Color
-	size            MutableSize
+	size            *Size
 }
 
-func (v *view) AddTextBox(text string) TextBox {
-	textBox := &textBox{
+func (v *View) AddTextBox(text string) *TextBox {
+	textBox := &TextBox{
 		text:            text,
 		backgroundColor: NoColor,
 		size:            newMutableSize(v.Size().Height(), v.Size().Width()),
@@ -29,27 +22,27 @@ func (v *view) AddTextBox(text string) TextBox {
 	return textBox
 }
 
-func (v *textBox) SetText(text string) {
+func (v *TextBox) SetText(text string) {
 	v.text = text
 }
 
-func (v *textBox) Text() string {
+func (v *TextBox) Text() string {
 	return v.text
 }
 
-func (v *textBox) SetBackgroundColor(c Color) {
+func (v *TextBox) SetBackgroundColor(c Color) {
 	v.backgroundColor = c
 }
 
-func (v *textBox) BackgroundColor() Color {
+func (v *TextBox) BackgroundColor() Color {
 	return v.backgroundColor
 }
 
-func (v *textBox) Size() MutableSize {
+func (v *TextBox) Size() MutableSizer {
 	return v.size
 }
 
-func (v *textBox) Render() (rows [][]Pixel) {
+func (v *TextBox) Render() (rows [][]Pixel) {
 	rows = NewPixels(v.Size().Height(), v.Size().Width(), v.backgroundColor)
 
 	// Split the text into words as we might need to wrap the text over multiple
