@@ -21,3 +21,7 @@ func Display(pixels [][]Pixel) string {
 
 	return out
 }
+
+func Print(pixels [][]Pixel) {
+	fmt.Print(Display(pixels))
+}

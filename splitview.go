@@ -47,7 +47,8 @@ func (v *SplitView) Render() [][]Pixel {
 	rows := NewPixels(v.Size().Height(), v.Size().Width(), v.backgroundColor)
 
 	renderedLeft := v.LeftView().Render()
-	renderedRight := movePixelsRight(v.RightView().Render(), 2)
+	leftWidth := v.LeftView().Size().Width()
+	renderedRight := movePixelsRight(v.RightView().Render(), leftWidth)
 
 	rows = OverlayPixels(rows, renderedLeft)
 	rows = OverlayPixels(rows, renderedRight)
