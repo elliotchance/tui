@@ -39,10 +39,21 @@ func (v *ListView) Size() MutableSizer {
 }
 
 func (v *ListView) Render() [][]Pixel {
-	rows := NewPixels(v.Size().Height(), v.Size().Width(), v.backgroundColor)
+	height := v.Size().Height()
+	width := v.Size().Width()
+
+	rows := NewPixels(height, width, v.backgroundColor)
 
 	for line := 0; line < len(v.items); line++ {
+		if line >= height {
+			break
+		}
+
 		for c := 0; c < len(v.items[line]); c++ {
+			if c >= width {
+				break
+			}
+
 			rows[line][c].Character = rune(v.items[line][c])
 		}
 	}
