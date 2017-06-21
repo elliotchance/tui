@@ -6,9 +6,25 @@ type SplitView struct {
 	leftView, rightView *View
 }
 
-func (v *View) AddSplitView() *SplitView {
+func (v *View) AddSplitView(leftViewWidth int) *SplitView {
 	viewWidth := v.Size().Width()
-	leftViewWidth := int(viewWidth / 2)
+	rightViewWidth := viewWidth - leftViewWidth
+
+	splitView := &SplitView{
+		backgroundColor: NoColor,
+		size:            newMutableSize(v.Size().Height(), viewWidth),
+		leftView:        newView(v.Size().Height(), leftViewWidth),
+		rightView:       newView(v.Size().Height(), rightViewWidth),
+	}
+
+	v.child = splitView
+
+	return splitView
+}
+
+func (v *View) AddFlexibleSplitView(leftWidthPercentage float64) *SplitView {
+	viewWidth := v.Size().Width()
+	leftViewWidth := int(leftWidthPercentage * float64(viewWidth))
 	rightViewWidth := viewWidth - leftViewWidth
 
 	splitView := &SplitView{

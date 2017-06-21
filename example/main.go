@@ -5,15 +5,15 @@ import "github.com/elliotchance/tui"
 func main() {
 	window := tui.MainWindow()
 	view := window.View()
-	splitView := view.AddSplitView()
+	splitView := view.AddSplitView(20)
 
 	nav := splitView.LeftView().AddListView()
 	nav.SetItems([]string{
-		"Press the down arrow...",
 		"Blue background",
 	})
 
 	splitView.RightView().SetBackgroundColor(tui.Blue)
+	splitView.RightView().AddTextBox("Press the down arrow...")
 
 	pixels := window.Render()
 	tui.Print(pixels)

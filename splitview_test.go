@@ -5,7 +5,7 @@ import (
 )
 
 var splitviewTests = map[string]windowTest{
-	"default width": {
+	"flexible": {
 		`##+++
 		 ##+++
 		 ##+++`,
@@ -13,7 +13,24 @@ var splitviewTests = map[string]windowTest{
 		 ~~~~~
 		 ~~~~~`,
 		func(w *Window) {
-			splitView := w.View().AddSplitView()
+			splitView := w.View().AddFlexibleSplitView(0.5)
+			splitView.LeftView().SetBackgroundColor(Red)
+			splitView.RightView().SetBackgroundColor(Green)
+		},
+		map[byte]Color{
+			'#': Red,
+			'+': Green,
+		},
+	},
+	"fixed": {
+		`#++++
+		 #++++
+		 #++++`,
+		`~~~~~
+		 ~~~~~
+		 ~~~~~`,
+		func(w *Window) {
+			splitView := w.View().AddSplitView(1)
 			splitView.LeftView().SetBackgroundColor(Red)
 			splitView.RightView().SetBackgroundColor(Green)
 		},

@@ -4,6 +4,7 @@ type ListView struct {
 	backgroundColor Color
 	size            *Size
 	items           []string
+	selectedIndex   int
 }
 
 func (v *View) AddListView() *ListView {
@@ -11,6 +12,7 @@ func (v *View) AddListView() *ListView {
 		backgroundColor: NoColor,
 		size:            newMutableSize(v.Size().Height(), v.Size().Width()),
 		items:           []string{},
+		selectedIndex:   -1,
 	}
 
 	v.child = listView
@@ -23,6 +25,10 @@ func (v *ListView) Items() []string {
 }
 
 func (v *ListView) SetItems(items []string) {
+	if v.selectedIndex < 0 && len(items) > 0 {
+		v.selectedIndex = 0
+	}
+
 	v.items = items
 }
 
@@ -55,6 +61,13 @@ func (v *ListView) Render() [][]Pixel {
 			}
 
 			rows[line][c].Character = rune(v.items[line][c])
+		}
+	}
+
+	// Highlight the selected item.
+	if v.selectedIndex >= 0 && v.selectedIndex < len(rows) {
+		for c := 0; c < width; c++ {
+			rows[v.selectedIndex][c].BackgroundColor = Gray
 		}
 	}
 
