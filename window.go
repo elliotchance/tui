@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"github.com/nsf/termbox-go"
 )
 
 type Window struct {
@@ -48,6 +49,32 @@ func (w *Window) SetBackgroundColor(c Color) {
 
 func (w *Window) BackgroundColor() Color {
 	return w.backgroundColor
+}
+
+func (w *Window) Start(h func(termbox.Event) bool) {
+	err := termbox.Init()
+	if err != nil {
+		panic(err)
+	}
+	defer termbox.Close()
+
+	termbox.SetInputMode(termbox.InputEsc)
+	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
+
+	for {
+		pixels := w.Render()
+		for rowId, row := range pixels {
+			for colId, pixel := range row {
+				termbox.SetCell(colId, rowId, pixel.Character, 0, termbox.Attribute(pixel.BackgroundColor))
+			}
+		}
+		termbox.Flush()
+
+		ev := termbox.PollEvent()
+		if !h(ev) {
+			break
+		}
+	}
 }
 
 func newWindow(height, width int) *Window {

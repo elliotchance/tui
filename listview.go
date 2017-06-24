@@ -67,9 +67,13 @@ func (v *ListView) Render() [][]Pixel {
 	// Highlight the selected item.
 	if v.selectedIndex >= 0 && v.selectedIndex < len(rows) {
 		for c := 0; c < width; c++ {
-			rows[v.selectedIndex][c].BackgroundColor = Gray
+			rows[v.selectedIndex][c].BackgroundColor = Blue
 		}
 	}
 
 	return rows
+}
+
+func (v *ListView) SetSelectedIndex(selectedIndex int) {
+	v.selectedIndex = selectedIndex
 }
