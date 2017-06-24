@@ -86,7 +86,7 @@ func (w *Window) Start(h func(termbox.Event)) {
 		switch ev.Type {
 		case termbox.EventKey:
 			if ev.Key == termbox.KeyCtrlC {
-				os.Exit(0)
+				goto exit
 			}
 
 		case termbox.EventResize:
@@ -103,6 +103,8 @@ func (w *Window) Start(h func(termbox.Event)) {
 
 		h(ev)
 	}
+
+	exit:
 }
 
 func newWindow(height, width int) *Window {
