@@ -2,6 +2,7 @@ package tui
 
 import (
 	"strings"
+	"github.com/nsf/termbox-go"
 )
 
 type TextBox struct {
@@ -14,7 +15,7 @@ func (v *View) AddTextBox(text string) *TextBox {
 	textBox := &TextBox{
 		text:            text,
 		backgroundColor: NoColor,
-		size:            newMutableSize(v.Size().Height(), v.Size().Width()),
+		size:            newMutableSize(v.Size().AbsoluteLeft(), v.Size().AbsoluteTop(), v.Size().Height(), v.Size().Width()),
 	}
 
 	v.child = textBox
@@ -104,6 +105,13 @@ func (v *TextBox) Render() (rows [][]Pixel) {
 	return
 }
 
-func (v *TextBox) setContainerSize(height, width int) {
-	v.Size().setContainerSize(height, width)
+func (v *TextBox) setContainerSize(left, top, height, width int) {
+	v.Size().setContainerSize(left, top, height, width)
+}
+
+func (v *TextBox) getViewForPosition(x, y int) Renderer {
+	return v
+}
+
+func (v *TextBox) handleEvent(e termbox.Event) {
 }

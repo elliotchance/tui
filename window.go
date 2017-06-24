@@ -2,10 +2,10 @@ package tui
 
 import (
 	"fmt"
+	"github.com/nsf/termbox-go"
 	"log"
 	"os"
 	"os/exec"
-	"github.com/nsf/termbox-go"
 )
 
 type Window struct {
@@ -13,7 +13,7 @@ type Window struct {
 	backgroundColor Color
 	size            *Size
 	activeColor     Color
-	activeView      *View
+	activeView      Renderer
 }
 
 func getTerminalSize() (height, width int) {
@@ -53,22 +53,22 @@ func (w *Window) BackgroundColor() Color {
 	return w.backgroundColor
 }
 
-func (w *Window) SetActiveView(activeView *View) {
+func (w *Window) SetActiveView(activeView Renderer) {
 	w.activeView = activeView
 }
 
-func (w *Window) ActiveView() *View {
+func (w *Window) ActiveView() Renderer {
 	return w.activeView
 }
 
-func (w *Window) Start(h func(termbox.Event)) {
+func (w *Window) Start() {
 	err := termbox.Init()
 	if err != nil {
 		panic(err)
 	}
 	defer termbox.Close()
 
-	termbox.SetInputMode(termbox.InputEsc)
+	termbox.SetInputMode(termbox.InputEsc | termbox.InputMouse)
 	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
 
 	for {
@@ -89,6 +89,13 @@ func (w *Window) Start(h func(termbox.Event)) {
 				goto exit
 			}
 
+			w.activeView.handleEvent(ev)
+
+		case termbox.EventMouse:
+			activeView := w.View().getViewForPosition(ev.MouseX, ev.MouseY)
+			w.SetActiveView(activeView)
+			activeView.handleEvent(ev)
+
 		case termbox.EventResize:
 			// Set the new dimensions of the main window.
 			height, width := getTerminalSize()
@@ -97,21 +104,18 @@ func (w *Window) Start(h func(termbox.Event)) {
 
 			// Now we have to cause all subviews to resize.
 			termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
-			w.view.setContainerSize(height, width)
-			continue
+			w.view.setContainerSize(0, 0, height, width)
 		}
-
-		h(ev)
 	}
 
-	exit:
+exit:
 }
 
 func newWindow(height, width int) *Window {
-	view := newView(height, width)
+	view := newView(0, 0, height, width)
 
 	return &Window{
-		size:            newMutableSize(height, width),
+		size:            newMutableSize(0, 0, height, width),
 		backgroundColor: NoColor,
 		view:            view,
 		activeColor:     Red,

@@ -1,8 +1,12 @@
 package tui
 
+import "github.com/nsf/termbox-go"
+
 type Renderer interface {
 	Render() [][]Pixel
-	setContainerSize(int, int)
+	setContainerSize(left, top, height, width int)
+	getViewForPosition(x, y int) Renderer
+	handleEvent(e termbox.Event)
 }
 
 type View struct {
@@ -11,9 +15,9 @@ type View struct {
 	size            MutableSizer
 }
 
-func newView(height, width int) *View {
+func newView(left, top, height, width int) *View {
 	return &View{
-		size:            newMutableSize(height, width),
+		size:            newMutableSize(left, top, height, width),
 		backgroundColor: NoColor,
 	}
 }
@@ -42,9 +46,20 @@ func (v *View) Size() MutableSizer {
 	return v.size
 }
 
-func (v *View) setContainerSize(height, width int) {
-	v.Size().setContainerSize(height, width)
+func (v *View) setContainerSize(left, top, height, width int) {
+	v.Size().setContainerSize(left, top, height, width)
 	if v.child != nil {
-		v.child.setContainerSize(height, width)
+		v.child.setContainerSize(left, top, height, width)
 	}
+}
+
+func (v *View) getViewForPosition(x, y int) Renderer {
+	if v.child != nil {
+		return v.child.getViewForPosition(x, y)
+	}
+
+	return v
+}
+
+func (v *View) handleEvent(e termbox.Event) {
 }

@@ -7,7 +7,9 @@ type Sizer interface {
 	WidthIsFlexible() bool
 	HeightPercentage() float64
 	WidthPercentage() float64
-	setContainerSize(int, int)
+	AbsoluteLeft() int
+	AbsoluteTop() int
+	setContainerSize(int, int, int, int)
 }
 
 type MutableSizer interface {
@@ -22,9 +24,10 @@ type Size struct {
 	height, width                     float64
 	heightIsFlexible, widthIsFlexible bool
 	containerHeight, containerWidth   int
+	containerLeft, containerTop       int
 }
 
-func newMutableSize(containerHeight, containerWidth int) *Size {
+func newMutableSize(left, top, containerHeight, containerWidth int) *Size {
 	return &Size{
 		height:           1.0,
 		width:            1.0,
@@ -32,7 +35,17 @@ func newMutableSize(containerHeight, containerWidth int) *Size {
 		widthIsFlexible:  true,
 		containerHeight:  containerHeight,
 		containerWidth:   containerWidth,
+		containerLeft:    left,
+		containerTop:     top,
 	}
+}
+
+func (s *Size) AbsoluteLeft() int {
+	return s.containerLeft
+}
+
+func (s *Size) AbsoluteTop() int {
+	return s.containerTop
 }
 
 func (s *Size) Height() int {
@@ -95,7 +108,9 @@ func (s *Size) WidthIsFlexible() bool {
 	return s.widthIsFlexible
 }
 
-func (s *Size) setContainerSize(height, width int) {
+func (s *Size) setContainerSize(left, top, height, width int) {
+	s.containerLeft = left
+	s.containerTop = top
 	s.containerHeight = height
 	s.containerWidth = width
 }

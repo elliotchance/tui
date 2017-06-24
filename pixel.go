@@ -132,7 +132,7 @@ func movePixelsDown(pixels [][]Pixel, downAmount int) [][]Pixel {
 	for rowIndex := downAmount; rowIndex < height; rowIndex++ {
 		row := make([]Pixel, width)
 		for colIndex := 0; colIndex < width; colIndex++ {
-			row[colIndex] = pixels[rowIndex - downAmount][colIndex]
+			row[colIndex] = pixels[rowIndex-downAmount][colIndex]
 		}
 
 		rows = append(rows, row)

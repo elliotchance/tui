@@ -1,5 +1,7 @@
 package tui
 
+import "github.com/nsf/termbox-go"
+
 type SplitView struct {
 	backgroundColor     Color
 	size                *Size
@@ -12,9 +14,9 @@ func (v *View) AddSplitView(leftViewWidth int) *SplitView {
 
 	splitView := &SplitView{
 		backgroundColor: NoColor,
-		size:            newMutableSize(v.Size().Height(), viewWidth),
-		leftView:        newView(v.Size().Height(), leftViewWidth),
-		rightView:       newView(v.Size().Height(), rightViewWidth),
+		size:            newMutableSize(v.Size().AbsoluteLeft(), v.Size().AbsoluteTop(), v.Size().Height(), viewWidth),
+		leftView:        newView(v.Size().AbsoluteLeft(), v.Size().AbsoluteTop(), v.Size().Height(), leftViewWidth),
+		rightView:       newView(v.Size().AbsoluteLeft()+leftViewWidth, v.Size().AbsoluteTop(), v.Size().Height(), rightViewWidth),
 	}
 
 	v.child = splitView
@@ -29,9 +31,9 @@ func (v *View) AddFlexibleSplitView(leftWidthPercentage float64) *SplitView {
 
 	splitView := &SplitView{
 		backgroundColor: NoColor,
-		size:            newMutableSize(v.Size().Height(), viewWidth),
-		leftView:        newView(v.Size().Height(), leftViewWidth),
-		rightView:       newView(v.Size().Height(), rightViewWidth),
+		size:            newMutableSize(v.Size().AbsoluteLeft(), v.Size().AbsoluteTop(), v.Size().Height(), viewWidth),
+		leftView:        newView(v.Size().AbsoluteLeft(), v.Size().AbsoluteTop(), v.Size().Height(), leftViewWidth),
+		rightView:       newView(v.Size().AbsoluteLeft()+leftViewWidth, v.Size().AbsoluteTop(), v.Size().Height(), rightViewWidth),
 	}
 
 	v.child = splitView
@@ -72,13 +74,24 @@ func (v *SplitView) Render() [][]Pixel {
 	return rows
 }
 
-func (v *SplitView) setContainerSize(height, width int) {
-	v.Size().setContainerSize(height, width)
+func (v *SplitView) setContainerSize(left, top, height, width int) {
+	v.Size().setContainerSize(left, top, height, width)
 
 	leftView := v.LeftView()
 	rightView := v.RightView()
 
 	// TODO: This only works for a fixed width splitview.
-	leftView.setContainerSize(height, leftView.Size().Width())
-	rightView.setContainerSize(height, width-leftView.Size().Width())
+	leftView.setContainerSize(left, top, height, leftView.Size().Width())
+	rightView.setContainerSize(left+leftView.Size().Width(), top, height, width-leftView.Size().Width())
+}
+
+func (v *SplitView) getViewForPosition(x, y int) Renderer {
+	if x >= v.RightView().Size().AbsoluteLeft() {
+		return v.RightView().getViewForPosition(x, y)
+	}
+
+	return v.LeftView().getViewForPosition(x, y)
+}
+
+func (v *SplitView) handleEvent(e termbox.Event) {
 }

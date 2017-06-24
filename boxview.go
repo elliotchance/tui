@@ -1,5 +1,7 @@
 package tui
 
+import "github.com/nsf/termbox-go"
+
 type BoxView struct {
 	backgroundColor Color
 	size            *Size
@@ -10,8 +12,8 @@ type BoxView struct {
 func (v *View) AddBoxView() *BoxView {
 	boxView := &BoxView{
 		backgroundColor: NoColor,
-		size:            newMutableSize(v.Size().Height(), v.Size().Width()),
-		view:            newView(v.Size().Height()-2, v.Size().Width()-2),
+		size:            newMutableSize(v.Size().AbsoluteLeft(), v.Size().AbsoluteTop(), v.Size().Height(), v.Size().Width()),
+		view:            newView(v.Size().AbsoluteLeft()+1, v.Size().AbsoluteTop()+1, v.Size().Height()-2, v.Size().Width()-2),
 		title:           "",
 	}
 
@@ -87,7 +89,14 @@ func (v *BoxView) Render() [][]Pixel {
 	return rows
 }
 
-func (v *BoxView) setContainerSize(height, width int) {
-	v.Size().setContainerSize(height, width)
-	v.view.setContainerSize(height, width)
+func (v *BoxView) setContainerSize(left, top, height, width int) {
+	v.Size().setContainerSize(left, top, height, width)
+	v.view.setContainerSize(left+1, top+1, height, width)
+}
+
+func (v *BoxView) getViewForPosition(x, y int) Renderer {
+	return v.view.getViewForPosition(x, y)
+}
+
+func (v *BoxView) handleEvent(e termbox.Event) {
 }

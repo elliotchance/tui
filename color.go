@@ -11,7 +11,7 @@ const (
 	// the parent view up to the terminal window itself will be used.
 	NoColor = Color(termbox.ColorDefault)
 
-	Black       = Color(termbox.ColorBlack)
+	Black = Color(termbox.ColorBlack)
 	//DarkRed     = Color(termbox.Attr)
 	//DarkGreen   = Color(2)
 	//DarkYellow  = Color(3)
@@ -20,13 +20,13 @@ const (
 	//DarkCyan    = Color(6)
 	//Gray        = Color(termbox.Color)
 	//DarkGray    = Color(8)
-	Red         = Color(termbox.ColorRed)
-	Green       = Color(termbox.ColorGreen)
-	Yellow      = Color(termbox.ColorYellow)
-	Blue        = Color(termbox.ColorBlue)
-	Magenta     = Color(termbox.ColorMagenta)
-	Cyan        = Color(termbox.ColorCyan)
-	White       = Color(termbox.ColorWhite)
+	Red     = Color(termbox.ColorRed)
+	Green   = Color(termbox.ColorGreen)
+	Yellow  = Color(termbox.ColorYellow)
+	Blue    = Color(termbox.ColorBlue)
+	Magenta = Color(termbox.ColorMagenta)
+	Cyan    = Color(termbox.ColorCyan)
+	White   = Color(termbox.ColorWhite)
 )
 
 func round(x float64) int {

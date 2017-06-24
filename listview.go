@@ -1,5 +1,9 @@
 package tui
 
+import (
+	"github.com/nsf/termbox-go"
+)
+
 type ListView struct {
 	backgroundColor Color
 	size            *Size
@@ -10,7 +14,7 @@ type ListView struct {
 func (v *View) AddListView() *ListView {
 	listView := &ListView{
 		backgroundColor: NoColor,
-		size:            newMutableSize(v.Size().Height(), v.Size().Width()),
+		size:            newMutableSize(v.Size().AbsoluteLeft(), v.Size().AbsoluteTop(), v.Size().Height(), v.Size().Width()),
 		items:           []string{},
 		selectedIndex:   -1,
 	}
@@ -74,10 +78,34 @@ func (v *ListView) Render() [][]Pixel {
 	return rows
 }
 
+func (v *ListView) SelectedIndex() int {
+	return v.selectedIndex
+}
+
 func (v *ListView) SetSelectedIndex(selectedIndex int) {
 	v.selectedIndex = selectedIndex
 }
 
-func (v *ListView) setContainerSize(height, width int) {
-	v.Size().setContainerSize(height, width)
+func (v *ListView) setContainerSize(left, top, height, width int) {
+	v.Size().setContainerSize(left, top, height, width)
+}
+
+func (v *ListView) getViewForPosition(x, y int) Renderer {
+	return v
+}
+
+func (v *ListView) handleEvent(e termbox.Event) {
+	switch e.Type {
+	case termbox.EventKey:
+		switch e.Key {
+		case termbox.KeyArrowDown:
+			v.SetSelectedIndex(v.SelectedIndex() + 1)
+
+		case termbox.KeyArrowUp:
+			v.SetSelectedIndex(v.SelectedIndex() - 1)
+		}
+
+	case termbox.EventMouse:
+		v.SetSelectedIndex(e.MouseY - v.Size().AbsoluteTop())
+	}
 }
