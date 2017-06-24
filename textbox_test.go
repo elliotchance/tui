@@ -6,6 +6,7 @@ import (
 
 var textboxTests = map[string]windowTest{
 	"less text than length": {
+		3, 5,
 		`.....
 		 .....
 		 .....`,
@@ -20,6 +21,7 @@ var textboxTests = map[string]windowTest{
 		map[byte]Color{},
 	},
 	"exact text length": {
+		3, 5,
 		`.....
 		 .....
 		 .....`,
@@ -34,6 +36,7 @@ var textboxTests = map[string]windowTest{
 		map[byte]Color{},
 	},
 	"hide overflow text": {
+		3, 5,
 		`.....
 		 .....
 		 .....`,
@@ -48,6 +51,7 @@ var textboxTests = map[string]windowTest{
 		map[byte]Color{},
 	},
 	"default width is 100 percent": {
+		3, 5,
 		`.....
 		 .....
 		 .....`,
@@ -61,6 +65,7 @@ var textboxTests = map[string]windowTest{
 		map[byte]Color{},
 	},
 	"default width overflow": {
+		3, 5,
 		`.....
 		 .....
 		 .....`,
@@ -74,6 +79,7 @@ var textboxTests = map[string]windowTest{
 		map[byte]Color{},
 	},
 	"wrap lines": {
+		3, 5,
 		`.....
 		 .....
 		 .....`,

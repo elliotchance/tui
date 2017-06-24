@@ -10,10 +10,13 @@ func main() {
 	view := window.View()
 	splitView := view.AddSplitView(20)
 
-	nav := splitView.LeftView().AddListView()
+	boxView := splitView.LeftView().AddBoxView()
+	boxView.SetTitle("Demos")
+
+	nav := boxView.View().AddListView()
 	nav.SetItems([]string{
 		"Blue background",
-		"Green background",
+		"Red background",
 	})
 
 	splitView.RightView().SetBackgroundColor(tui.Color(tui.Blue))

@@ -7,6 +7,7 @@ import (
 )
 
 type windowTest struct {
+	height, width  int
 	expectedColors string
 	expectedText   string
 	setup          func(*Window)
@@ -15,6 +16,7 @@ type windowTest struct {
 
 var windowTests = map[string]windowTest{
 	"blank window": {
+		3, 5,
 		`.....
 		 .....
 		 .....`,
@@ -26,6 +28,7 @@ var windowTests = map[string]windowTest{
 		map[byte]Color{},
 	},
 	"red window": {
+		3, 5,
 		`#####
 		 #####
 		 #####`,
@@ -83,20 +86,19 @@ func addBorder(p [][]Pixel) (q [][]Pixel) {
 func runWindowTests(t *testing.T, tests map[string]windowTest) {
 	for testName, test := range tests {
 		t.Run(testName, func(t *testing.T) {
-			height, width := 3, 5
-			window := newWindow(height, width)
+			window := newWindow(test.height, test.width)
 
 			test.setup(window)
 
 			expectedColors := stripSpace(test.expectedColors)
 			expectedText := stripSpace(test.expectedText)
 
-			expectedPixels := NewPixels(height, width, NoColor)
+			expectedPixels := NewPixels(test.height, test.width, NoColor)
 			for row := 0; row < len(expectedPixels); row++ {
 				for col := 0; col < len(expectedPixels[0]); col++ {
 					pos := len(expectedPixels[0])*row + col
 
-					char := expectedText[pos]
+					char := []rune(expectedText)[pos]
 					if char == '~' {
 						char = ' '
 					}
@@ -106,7 +108,7 @@ func runWindowTests(t *testing.T, tests map[string]windowTest) {
 						color = NoColor
 					}
 
-					expectedPixels[row][col].Character = rune(char)
+					expectedPixels[row][col].Character = char
 					expectedPixels[row][col].BackgroundColor = color
 				}
 			}

@@ -111,3 +111,32 @@ func movePixelsRight(pixels [][]Pixel, rightAmount int) [][]Pixel {
 
 	return rows
 }
+
+func movePixelsDown(pixels [][]Pixel, downAmount int) [][]Pixel {
+	// FIXME: We assume that the shift down will be positive.
+
+	height := len(pixels)
+	width := len(pixels[0])
+	rows := [][]Pixel{}
+
+	// Create blank rows for the shift down.
+	for rowIndex := 0; rowIndex < downAmount; rowIndex++ {
+		row := make([]Pixel, width)
+		for colIndex := 0; colIndex < width; colIndex++ {
+			row[colIndex].Character = ' '
+		}
+
+		rows = append(rows, row)
+	}
+
+	for rowIndex := downAmount; rowIndex < height; rowIndex++ {
+		row := make([]Pixel, width)
+		for colIndex := 0; colIndex < width; colIndex++ {
+			row[colIndex] = pixels[rowIndex - downAmount][colIndex]
+		}
+
+		rows = append(rows, row)
+	}
+
+	return rows
+}

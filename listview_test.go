@@ -6,6 +6,7 @@ import (
 
 var listviewTests = map[string]windowTest{
 	"no items": {
+		3, 5,
 		`.....
 		 .....
 		 .....`,
@@ -18,7 +19,8 @@ var listviewTests = map[string]windowTest{
 		map[byte]Color{},
 	},
 	"one item": {
-		`.....
+		3, 5,
+		`#####
 		 .....
 		 .....`,
 		`Foo~~
@@ -28,10 +30,13 @@ var listviewTests = map[string]windowTest{
 			listView := w.View().AddListView()
 			listView.SetItems([]string{"Foo"})
 		},
-		map[byte]Color{},
+		map[byte]Color{
+			'#': Blue,
+		},
 	},
 	"three items": {
-		`.....
+		3, 5,
+		`#####
 		 .....
 		 .....`,
 		`Foo~~
@@ -41,10 +46,13 @@ var listviewTests = map[string]windowTest{
 			listView := w.View().AddListView()
 			listView.SetItems([]string{"Foo", "Bar", "Baz"})
 		},
-		map[byte]Color{},
+		map[byte]Color{
+			'#': Blue,
+		},
 	},
 	"item truncated": {
-		`.....
+		3, 5,
+		`#####
 		 .....
 		 .....`,
 		`Foo~B
@@ -54,10 +62,13 @@ var listviewTests = map[string]windowTest{
 			listView := w.View().AddListView()
 			listView.SetItems([]string{"Foo Bar"})
 		},
-		map[byte]Color{},
+		map[byte]Color{
+			'#': Blue,
+		},
 	},
 	"too many items": {
-		`.....
+		3, 5,
+		`#####
 		 .....
 		 .....`,
 		`Foo~~
@@ -67,10 +78,13 @@ var listviewTests = map[string]windowTest{
 			listView := w.View().AddListView()
 			listView.SetItems([]string{"Foo", "Bar", "Baz", "Qux"})
 		},
-		map[byte]Color{},
+		map[byte]Color{
+			'#': Blue,
+		},
 	},
 	"background color": {
-		`#####
+		3, 5,
+		`+++++
 		 #####
 		 #####`,
 		`Foo~~
@@ -83,6 +97,7 @@ var listviewTests = map[string]windowTest{
 		},
 		map[byte]Color{
 			'#': Green,
+			'+': Blue,
 		},
 	},
 }

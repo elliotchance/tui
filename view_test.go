@@ -6,6 +6,7 @@ import (
 
 var viewTests = map[string]windowTest{
 	"green window view": {
+		3, 5,
 		`#####
 		 #####
 		 #####`,
@@ -20,6 +21,7 @@ var viewTests = map[string]windowTest{
 		},
 	},
 	"resize window view": {
+		3, 5,
 		`###..
 		 ###..
 		 .....`,
@@ -36,6 +38,7 @@ var viewTests = map[string]windowTest{
 		},
 	},
 	"flexible window view": {
+		3, 5,
 		`####.
 		 ####.
 		 .....`,

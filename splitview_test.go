@@ -6,6 +6,7 @@ import (
 
 var splitviewTests = map[string]windowTest{
 	"flexible": {
+		3, 5,
 		`##+++
 		 ##+++
 		 ##+++`,
@@ -23,6 +24,7 @@ var splitviewTests = map[string]windowTest{
 		},
 	},
 	"fixed": {
+		3, 5,
 		`#++++
 		 #++++
 		 #++++`,
