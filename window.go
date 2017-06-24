@@ -12,6 +12,8 @@ type Window struct {
 	view            *View
 	backgroundColor Color
 	size            *Size
+	activeColor     Color
+	activeView      *View
 }
 
 func getTerminalSize() (height, width int) {
@@ -51,7 +53,15 @@ func (w *Window) BackgroundColor() Color {
 	return w.backgroundColor
 }
 
-func (w *Window) Start(h func(termbox.Event) bool) {
+func (w *Window) SetActiveView(activeView *View) {
+	w.activeView = activeView
+}
+
+func (w *Window) ActiveView() *View {
+	return w.activeView
+}
+
+func (w *Window) Start(h func(termbox.Event)) {
 	err := termbox.Init()
 	if err != nil {
 		panic(err)
@@ -65,23 +75,45 @@ func (w *Window) Start(h func(termbox.Event) bool) {
 		pixels := w.Render()
 		for rowId, row := range pixels {
 			for colId, pixel := range row {
-				termbox.SetCell(colId, rowId, pixel.Character, 0, termbox.Attribute(pixel.BackgroundColor))
+				termbox.SetCell(colId, rowId, pixel.Character, 0,
+					termbox.Attribute(pixel.BackgroundColor))
 			}
 		}
 		termbox.Flush()
 
 		ev := termbox.PollEvent()
-		if !h(ev) {
-			break
+
+		switch ev.Type {
+		case termbox.EventKey:
+			if ev.Key == termbox.KeyCtrlC {
+				os.Exit(0)
+			}
+
+		case termbox.EventResize:
+			// Set the new dimensions of the main window.
+			height, width := getTerminalSize()
+			w.size.height = float64(height)
+			w.size.width = float64(width)
+
+			// Now we have to cause all subviews to resize.
+			termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
+			w.view.setContainerSize(height, width)
+			continue
 		}
+
+		h(ev)
 	}
 }
 
 func newWindow(height, width int) *Window {
+	view := newView(height, width)
+
 	return &Window{
 		size:            newMutableSize(height, width),
 		backgroundColor: NoColor,
-		view:            newView(height, width),
+		view:            view,
+		activeColor:     Red,
+		activeView:      view,
 	}
 }
 

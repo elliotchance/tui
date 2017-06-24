@@ -86,3 +86,8 @@ func (v *BoxView) Render() [][]Pixel {
 
 	return rows
 }
+
+func (v *BoxView) setContainerSize(height, width int) {
+	v.Size().setContainerSize(height, width)
+	v.view.setContainerSize(height, width)
+}

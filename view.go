@@ -2,6 +2,7 @@ package tui
 
 type Renderer interface {
 	Render() [][]Pixel
+	setContainerSize(int, int)
 }
 
 type View struct {
@@ -39,4 +40,11 @@ func (v *View) Render() [][]Pixel {
 
 func (v *View) Size() MutableSizer {
 	return v.size
+}
+
+func (v *View) setContainerSize(height, width int) {
+	v.Size().setContainerSize(height, width)
+	if v.child != nil {
+		v.child.setContainerSize(height, width)
+	}
 }

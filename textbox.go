@@ -103,3 +103,7 @@ func (v *TextBox) Render() (rows [][]Pixel) {
 
 	return
 }
+
+func (v *TextBox) setContainerSize(height, width int) {
+	v.Size().setContainerSize(height, width)
+}

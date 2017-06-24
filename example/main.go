@@ -22,7 +22,7 @@ func main() {
 	splitView.RightView().SetBackgroundColor(tui.Color(tui.Blue))
 	splitView.RightView().AddTextBox("Press the down arrow...")
 
-	window.Start(func(ev termbox.Event) bool {
+	window.Start(func(ev termbox.Event) {
 		switch ev.Type {
 		case termbox.EventKey:
 			if ev.Key == termbox.KeyArrowDown {
@@ -34,12 +34,6 @@ func main() {
 				nav.SetSelectedIndex(0)
 				splitView.RightView().SetBackgroundColor(tui.Color(tui.Blue))
 			}
-
-			if ev.Key == termbox.KeyCtrlC {
-				return false
-			}
 		}
-
-		return true
 	})
 }

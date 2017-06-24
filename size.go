@@ -5,6 +5,9 @@ type Sizer interface {
 	Width() int
 	HeightIsFlexible() bool
 	WidthIsFlexible() bool
+	HeightPercentage() float64
+	WidthPercentage() float64
+	setContainerSize(int, int)
 }
 
 type MutableSizer interface {
@@ -48,6 +51,22 @@ func (s *Size) Width() int {
 	return int(s.width)
 }
 
+func (s *Size) HeightPercentage() float64 {
+	if s.heightIsFlexible {
+		return s.height
+	}
+
+	return s.height / float64(s.containerHeight)
+}
+
+func (s *Size) WidthPercentage() float64 {
+	if s.widthIsFlexible {
+		return s.width
+	}
+
+	return s.width / float64(s.containerWidth)
+}
+
 func (s *Size) SetHeight(height int) {
 	s.heightIsFlexible = false
 	s.height = float64(height)
@@ -74,4 +93,9 @@ func (s *Size) HeightIsFlexible() bool {
 
 func (s *Size) WidthIsFlexible() bool {
 	return s.widthIsFlexible
+}
+
+func (s *Size) setContainerSize(height, width int) {
+	s.containerHeight = height
+	s.containerWidth = width
 }

@@ -77,3 +77,7 @@ func (v *ListView) Render() [][]Pixel {
 func (v *ListView) SetSelectedIndex(selectedIndex int) {
 	v.selectedIndex = selectedIndex
 }
+
+func (v *ListView) setContainerSize(height, width int) {
+	v.Size().setContainerSize(height, width)
+}

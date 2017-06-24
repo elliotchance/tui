@@ -71,3 +71,14 @@ func (v *SplitView) Render() [][]Pixel {
 
 	return rows
 }
+
+func (v *SplitView) setContainerSize(height, width int) {
+	v.Size().setContainerSize(height, width)
+
+	leftView := v.LeftView()
+	rightView := v.RightView()
+
+	// TODO: This only works for a fixed width splitview.
+	leftView.setContainerSize(height, leftView.Size().Width())
+	rightView.setContainerSize(height, width-leftView.Size().Width())
+}
