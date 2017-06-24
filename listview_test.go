@@ -55,7 +55,7 @@ var listviewTests = map[string]windowTest{
 		`#####
 		 .....
 		 .....`,
-		`Foo~B
+		`Foo_B
 		 ~~~~~
 		 ~~~~~`,
 		func(w *Window) {

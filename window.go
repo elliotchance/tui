@@ -14,6 +14,7 @@ type Window struct {
 	size            *Size
 	activeColor     Color
 	activeView      Renderer
+	modal           *Modal
 }
 
 func getTerminalSize() (height, width int) {
@@ -37,12 +38,26 @@ func (w *Window) Size() Sizer {
 }
 
 func (w *Window) Render() [][]Pixel {
+	// Render the window first
 	renderedView := w.View().Render()
-
 	size := w.Size()
-	renderedWindow := NewPixels(size.Height(), size.Width(), w.backgroundColor)
 
-	return OverlayPixels(renderedWindow, renderedView)
+	renderedWindow := NewPixels(size.Height(), size.Width(), w.backgroundColor)
+	renderedWindow = OverlayPixels(renderedWindow, renderedView)
+
+	// Now render the modal over the top
+	if w.modal != nil {
+		renderedModal := w.modal.Render()
+
+		// Move the modal so it appears at the same coordinates as it stores
+		// internally.
+		renderedModal = movePixelsRight(renderedModal, w.modal.Size().AbsoluteLeft())
+		renderedModal = movePixelsDown(renderedModal, w.modal.Size().AbsoluteTop())
+
+		renderedWindow = OverlayPixels(renderedWindow, renderedModal)
+	}
+
+	return renderedWindow
 }
 
 func (w *Window) SetBackgroundColor(c Color) {
@@ -127,4 +142,15 @@ func MainWindow() *Window {
 	height, width := getTerminalSize()
 
 	return newWindow(height, width)
+}
+
+func (w *Window) ShowModal(modal *Modal) {
+	// When the modal is added we need to adjust the position so that it appears
+	// in the center of the screen.
+	left := (w.Size().Width() - modal.Size().Width()) / 2
+	top := (w.Size().Height() - modal.Size().Height()) / 2
+
+	modal.setContainerSize(left, top, modal.Size().Height(), modal.Size().Width())
+
+	w.modal = modal
 }

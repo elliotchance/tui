@@ -100,6 +100,8 @@ func runWindowTests(t *testing.T, tests map[string]windowTest) {
 
 					char := []rune(expectedText)[pos]
 					if char == '~' {
+						char = 0
+					} else if char == '_' {
 						char = ' '
 					}
 

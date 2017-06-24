@@ -10,6 +10,10 @@ func Display(pixels [][]Pixel) string {
 		for col := 0; col < len(pixels[0]); col++ {
 			pixel := pixels[row][col]
 
+			if pixel.Character == 0 {
+				pixel.Character = ' '
+			}
+
 			if pixel.BackgroundColor != NoColor {
 				out += fmt.Sprintf("\x1b[48;5;%dm%c\x1b[0m", pixel.BackgroundColor, pixel.Character)
 			} else {

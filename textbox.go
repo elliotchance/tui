@@ -1,8 +1,8 @@
 package tui
 
 import (
-	"strings"
 	"github.com/nsf/termbox-go"
+	"strings"
 )
 
 type TextBox struct {

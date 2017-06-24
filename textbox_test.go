@@ -83,7 +83,7 @@ var textboxTests = map[string]windowTest{
 		`.....
 		 .....
 		 .....`,
-		`Foo~A
+		`Foo_A
 		 Bar~~
 		 Bazzi`,
 		func(w *Window) {

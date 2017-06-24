@@ -12,7 +12,7 @@ func NewPixels(height, width int, backgroundColor Color) [][]Pixel {
 		row := make([]Pixel, width)
 		for col := 0; col < width; col++ {
 			row[col] = Pixel{
-				Character:       ' ',
+				Character:       0,
 				BackgroundColor: backgroundColor,
 			}
 		}
@@ -28,30 +28,34 @@ func OverlayPixel(bottom, top Pixel) (p Pixel) {
 	tColor, tText := top.BackgroundColor, top.Character
 
 	switch {
-	case bColor == NoColor && tColor == NoColor && bText == ' ' && tText == ' ',
-		bColor == NoColor && tColor != NoColor && bText == ' ' && tText == ' ',
-		bColor == NoColor && tColor != NoColor && bText == ' ' && tText != ' ',
-		bColor == NoColor && tColor != NoColor && bText != ' ' && tText == ' ',
-		bColor == NoColor && tColor != NoColor && bText != ' ' && tText != ' ':
+	case bColor == NoColor && tColor == NoColor && bText == 0 && tText == 0,
+		bColor == NoColor && tColor != NoColor && bText == 0 && tText == 0,
+		bColor == NoColor && tColor != NoColor && bText == 0 && tText != 0,
+		bColor == NoColor && tColor != NoColor && bText != 0 && tText == 0,
+		bColor == NoColor && tColor != NoColor && bText != 0 && tText != 0:
 		return Pixel{
 			BackgroundColor: tColor,
 			Character:       tText,
 		}
-	case bColor == NoColor && tColor == NoColor && bText == ' ' && tText != ' ',
-		bColor == NoColor && tColor == NoColor && bText != ' ' && tText != ' ',
-		bColor != NoColor && tColor == NoColor && bText == ' ' && tText != ' ',
-		bColor != NoColor && tColor == NoColor && bText != ' ' && tText != ' ',
-		bColor != NoColor && tColor != NoColor && bText == ' ' && tText == ' ',
-		bColor != NoColor && tColor != NoColor && bText == ' ' && tText != ' ',
-		bColor != NoColor && tColor != NoColor && bText != ' ' && tText != ' ',
-		bColor != NoColor && tColor != NoColor && bText != ' ' && tText == ' ':
+	case bColor == NoColor && tColor == NoColor && bText == 0 && tText != 0,
+		bColor == NoColor && tColor == NoColor && bText != 0 && tText != 0,
+		bColor != NoColor && tColor == NoColor && bText == 0 && tText != 0,
+		bColor != NoColor && tColor == NoColor && bText != 0 && tText != 0:
 		return Pixel{
 			BackgroundColor: bColor,
 			Character:       tText,
 		}
-	case bColor == NoColor && tColor == NoColor && bText != ' ' && tText == ' ',
-		bColor != NoColor && tColor == NoColor && bText == ' ' && tText == ' ',
-		bColor != NoColor && tColor == NoColor && bText != ' ' && tText == ' ':
+	case bColor != NoColor && tColor != NoColor && bText == 0 && tText == 0,
+		bColor != NoColor && tColor != NoColor && bText == 0 && tText != 0,
+		bColor != NoColor && tColor != NoColor && bText != 0 && tText != 0,
+		bColor != NoColor && tColor != NoColor && bText != 0 && tText == 0:
+		return Pixel{
+			BackgroundColor: tColor,
+			Character:       tText,
+		}
+	case bColor == NoColor && tColor == NoColor && bText != 0 && tText == 0,
+		bColor != NoColor && tColor == NoColor && bText == 0 && tText == 0,
+		bColor != NoColor && tColor == NoColor && bText != 0 && tText == 0:
 		return Pixel{
 			BackgroundColor: bColor,
 			Character:       bText,
@@ -97,7 +101,7 @@ func movePixelsRight(pixels [][]Pixel, rightAmount int) [][]Pixel {
 		row := make([]Pixel, width+rightAmount)
 		for colIndex := 0; colIndex < rightAmount; colIndex++ {
 			row[colIndex] = Pixel{
-				Character:       ' ',
+				Character:       0,
 				BackgroundColor: NoColor,
 			}
 		}
@@ -123,16 +127,16 @@ func movePixelsDown(pixels [][]Pixel, downAmount int) [][]Pixel {
 	for rowIndex := 0; rowIndex < downAmount; rowIndex++ {
 		row := make([]Pixel, width)
 		for colIndex := 0; colIndex < width; colIndex++ {
-			row[colIndex].Character = ' '
+			row[colIndex].Character = 0
 		}
 
 		rows = append(rows, row)
 	}
 
-	for rowIndex := downAmount; rowIndex < height; rowIndex++ {
+	for rowIndex := 0; rowIndex < height; rowIndex++ {
 		row := make([]Pixel, width)
 		for colIndex := 0; colIndex < width; colIndex++ {
-			row[colIndex] = pixels[rowIndex-downAmount][colIndex]
+			row[colIndex] = pixels[rowIndex][colIndex]
 		}
 
 		rows = append(rows, row)

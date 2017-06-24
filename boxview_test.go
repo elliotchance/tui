@@ -10,7 +10,7 @@ var boxviewTests = map[string]windowTest{
 		`..........
 		 ..........
 		 ..........`,
-		`┌~Hi~────┐
+		`┌_Hi_────┐
 		 │~~~~~~~~│
 		 └────────┘`,
 		func(w *Window) {
