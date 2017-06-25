@@ -13,18 +13,25 @@ func main() {
 	boxView.SetTitle("Demos")
 
 	nav := boxView.View().AddListView()
+	nav.OnIndexChanged(func() {
+		switch nav.SelectedIndex() {
+		case 0:
+			splitView.RightView().SetBackgroundColor(tui.Color(tui.Blue))
+		case 1:
+			splitView.RightView().SetBackgroundColor(tui.Color(tui.Red))
+		case 3:
+			modal := tui.NewModal(12, 50)
+			modal.View().AddTextBox("Hello, I'm a modal.")
+
+			window.ShowModal(modal)
+		}
+	})
 	nav.SetItems([]string{
 		"Blue background",
 		"Red background",
+		"Colors",
+		"Modals",
 	})
-
-	splitView.RightView().SetBackgroundColor(tui.Color(tui.Blue))
-	splitView.RightView().AddTextBox("Press the down arrow...")
-
-	modal := tui.NewModal(12, 50)
-	modal.View().AddTextBox("Hello, I'm a modal.")
-
-	window.ShowModal(modal)
 
 	window.Start()
 }

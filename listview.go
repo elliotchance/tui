@@ -9,6 +9,9 @@ type ListView struct {
 	size            *Size
 	items           []string
 	selectedIndex   int
+
+	// Events
+	onIndexChanged func()
 }
 
 func (v *View) AddListView() *ListView {
@@ -29,11 +32,13 @@ func (v *ListView) Items() []string {
 }
 
 func (v *ListView) SetItems(items []string) {
-	if v.selectedIndex < 0 && len(items) > 0 {
-		v.selectedIndex = 0
-	}
-
 	v.items = items
+
+	if v.selectedIndex < 0 && len(items) > 0 {
+		// This happens when we are receiving items when there were previously
+		// none. This will cause the event OnIndexChanged to fire.
+		v.SetSelectedIndex(0)
+	}
 }
 
 func (v *ListView) SetBackgroundColor(c Color) {
@@ -83,7 +88,20 @@ func (v *ListView) SelectedIndex() int {
 }
 
 func (v *ListView) SetSelectedIndex(selectedIndex int) {
+	// Make sure they do not go beyond the bounds of the list.
+	if selectedIndex < 0 {
+		selectedIndex = 0
+	}
+	if selectedIndex >= len(v.items) {
+		selectedIndex = len(v.items) - 1
+	}
+
+	shouldFireEvent := v.selectedIndex != selectedIndex
 	v.selectedIndex = selectedIndex
+
+	if shouldFireEvent && v.onIndexChanged != nil {
+		v.onIndexChanged()
+	}
 }
 
 func (v *ListView) setContainerSize(left, top, height, width int) {
@@ -106,6 +124,15 @@ func (v *ListView) handleEvent(e termbox.Event) {
 		}
 
 	case termbox.EventMouse:
-		v.SetSelectedIndex(e.MouseY - v.Size().AbsoluteTop())
+		newSelectedIndex := e.MouseY - v.Size().AbsoluteTop()
+		if newSelectedIndex < 0 || newSelectedIndex >= len(v.Items()) {
+			break
+		}
+
+		v.SetSelectedIndex(newSelectedIndex)
 	}
+}
+
+func (v *ListView) OnIndexChanged(onIndexChanged func()) {
+	v.onIndexChanged = onIndexChanged
 }

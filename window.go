@@ -84,6 +84,7 @@ func (w *Window) Start() {
 	defer termbox.Close()
 
 	termbox.SetInputMode(termbox.InputEsc | termbox.InputMouse)
+	termbox.SetOutputMode(termbox.Output256)
 	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
 
 	for {
